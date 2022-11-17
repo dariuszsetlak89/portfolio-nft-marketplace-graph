@@ -1,6 +1,6 @@
 type ActiveItem @entity {
     id: ID! # ! - required
-    buyer: Bytes! # Address - 0x000... in noone has bought yet
+    buyer: Bytes! # Address - 0x000... means noone has bought yet
     seller: Bytes!
     nftAddress: Bytes!
     tokenId: BigInt!
@@ -28,10 +28,4 @@ type ItemBought @entity {
     nftAddress: Bytes!
     tokenId: BigInt!
     price: BigInt
-}
-
-type ProceedsWithdrawal @entity {
-    id: ID!
-    seller: Bytes!
-    proceeds: BigInt!
 }

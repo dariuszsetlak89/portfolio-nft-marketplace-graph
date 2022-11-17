@@ -17,8 +17,6 @@ dataSources:
               - ItemBought
               - ItemCanceled
               - ItemListed
-              - ProceedsWithdrawalSuccess
-              - TransferReceived
           abis:
               - name: NftMarketplace
                 file: ./abis/NftMarketplace.json
@@ -29,6 +27,4 @@ dataSources:
                 handler: handleItemCanceled
               - event: ItemListed(indexed address,indexed address,indexed uint256,uint256)
                 handler: handleItemListed
-              - event: ProceedsWithdrawalSuccess(indexed address,indexed uint256)
-                handler: handleProceedsWithdrawal
           file: ./src/nft-marketplace.ts

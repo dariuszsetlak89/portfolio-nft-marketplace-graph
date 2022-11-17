@@ -2,21 +2,20 @@ import { BigInt, Address } from "@graphprotocol/graph-ts";
 import {
     ItemListed as ItemListedEvent,
     ItemBought as ItemBoughtEvent,
-    ItemCanceled as ItemCanceledEvent,
-    ProceedsWithdrawalSuccess as ProceedsWithdrawalEvent
+    ItemCanceled as ItemCanceledEvent
 } from "../generated/NftMarketplace/NftMarketplace";
-import { ItemListed, ActiveItem, ItemBought, ItemCanceled, ProceedsWithdrawal } from "../generated/schema";
+import { ItemListed, ActiveItem, ItemBought, ItemCanceled } from "../generated/schema";
 
 export function handleItemListed(event: ItemListedEvent): void {
     // Get existing graph objects - NFT item listing update
-    let itemListed = ItemListed.load(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
-    let activeItem = ActiveItem.load(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
+    let itemListed = ItemListed.load(createId(event.params.tokenId, event.params.nftAddress));
+    let activeItem = ActiveItem.load(createId(event.params.tokenId, event.params.nftAddress));
     // Create new graph objects - new NFT item listing
     if (!itemListed) {
-        itemListed = new ItemListed(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
+        itemListed = new ItemListed(createId(event.params.tokenId, event.params.nftAddress));
     }
     if (!activeItem) {
-        activeItem = new ActiveItem(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
+        activeItem = new ActiveItem(createId(event.params.tokenId, event.params.nftAddress));
     }
     // Update graph objects parameters
     // Listed item
@@ -39,11 +38,11 @@ export function handleItemListed(event: ItemListedEvent): void {
 
 export function handleItemBought(event: ItemBoughtEvent): void {
     // Get existing graph objects
-    let itemBought = ItemBought.load(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
-    let activeItem = ActiveItem.load(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
+    let itemBought = ItemBought.load(createId(event.params.tokenId, event.params.nftAddress));
+    let activeItem = ActiveItem.load(createId(event.params.tokenId, event.params.nftAddress));
     // Create new graph objects
     if (!itemBought) {
-        itemBought = new ItemBought(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
+        itemBought = new ItemBought(createId(event.params.tokenId, event.params.nftAddress));
     }
     // Update graph object parameters
     itemBought.buyer = event.params.buyer;
@@ -57,11 +56,11 @@ export function handleItemBought(event: ItemBoughtEvent): void {
 
 export function handleItemCanceled(event: ItemCanceledEvent): void {
     // Get existing graph objects
-    let itemCanceled = ItemCanceled.load(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
-    let activeItem = ActiveItem.load(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
+    let itemCanceled = ItemCanceled.load(createId(event.params.tokenId, event.params.nftAddress));
+    let activeItem = ActiveItem.load(createId(event.params.tokenId, event.params.nftAddress));
     // Create new graph objects
     if (!itemCanceled) {
-        itemCanceled = new ItemCanceled(getIdForItemOperations(event.params.tokenId, event.params.nftAddress));
+        itemCanceled = new ItemCanceled(createId(event.params.tokenId, event.params.nftAddress));
     }
     // Update graph object parameters
     itemCanceled.seller = event.params.seller;
@@ -77,26 +76,7 @@ export function handleItemCanceled(event: ItemCanceledEvent): void {
     activeItem!.save();
 }
 
-export function handleProceedsWithdrawal(event: ProceedsWithdrawalEvent): void {
-    // Get existing graph object
-    let proceedsWithdrawal = ProceedsWithdrawal.load(getIdForWithdrawals(event.params.seller));
-    // Create new graph object
-    if (!proceedsWithdrawal) {
-        proceedsWithdrawal = new ProceedsWithdrawal(getIdForWithdrawals(event.params.seller));
-    }
-    // Update graph object parameters
-    proceedsWithdrawal.seller = event.params.seller;
-    proceedsWithdrawal.proceeds = event.params.proceeds;
-    // Save updated object to graph protocol
-    proceedsWithdrawal.save();
-}
-
-// Function to get unique ID of graph objects for NFT item operations
-function getIdForItemOperations(tokenId: BigInt, nftAddress: Address): string {
+// Function to create unique ID of graph objects for NFT item operations
+function createId(tokenId: BigInt, nftAddress: Address): string {
     return tokenId.toHexString() + nftAddress.toHexString();
-}
-
-// Function to get unique ID of graph objects for proceeds withdrawals
-function getIdForWithdrawals(seller: Address): string {
-    return seller.toHexString();
 }
