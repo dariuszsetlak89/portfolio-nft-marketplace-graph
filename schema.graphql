@@ -1,0 +1,37 @@
+type ActiveItem @entity {
+    id: ID! # ! - required
+    buyer: Bytes! # Address - 0x000... in noone has bought yet
+    seller: Bytes!
+    nftAddress: Bytes!
+    tokenId: BigInt!
+    price: BigInt # not required - price can be null (item not listed)
+}
+
+type ItemListed @entity {
+    id: ID!
+    seller: Bytes!
+    nftAddress: Bytes!
+    tokenId: BigInt!
+    price: BigInt
+}
+
+type ItemCanceled @entity {
+    id: ID!
+    seller: Bytes!
+    nftAddress: Bytes!
+    tokenId: BigInt!
+}
+
+type ItemBought @entity {
+    id: ID!
+    buyer: Bytes!
+    nftAddress: Bytes!
+    tokenId: BigInt!
+    price: BigInt
+}
+
+type ProceedsWithdrawal @entity {
+    id: ID!
+    seller: Bytes!
+    proceeds: BigInt!
+}
